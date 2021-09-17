@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void zeroOnClick(View view) {
-        if (!(calculation.equals("") || isOperator(calculation.substring(calculation.length() - 1))))
+        if (!(calculation.equals("")))
             setCalculation("0");
     }
 
@@ -168,20 +168,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void equalOnClick(View view) {
+        // gunakan try catch untuk meminimalisir error dan mengubah nilai calculate menjadi 0 saat terjadi error
         try {
+            //jika pada akhir string terdapat operator, maka hapus operator di akhir tersebut
             if (isOperator(calculation.substring(calculation.length() - 1))) {
                 backspace();
             }
+            //menggunakan split dan regex untuk memisahkan angka dengan operator
             String[] splitCalculate = calculation.split("(?<=[\\d.])(?=[^\\d.])|(?<=[^\\d.])(?=[\\d.])");
             LinkedList<Double> operands = new LinkedList<>();
             LinkedList<String> operators = new LinkedList<>();
             double operand;
             String operator;
 
+            //jika angka awal negatif (terdapat operator - di awal string), kosongkan array index[0] dan ubah angka pertama menjadi angka negatif
             if (splitCalculate[0].equals("-")) {
                 splitCalculate[1] = "-" + splitCalculate[1];
                 splitCalculate[0] = "";
             }
+            //dari array splitCalculate, sortir operator dan operand ke dalam linkedlist masing2
             for (String split : splitCalculate) {
                 if (split.equals("")) {
                     continue;
@@ -192,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            //loop untuk mengutamakan perkalian, pembagian, dan modulus
             for (int i = 0; i < operators.size(); i++) {
                 operator = operators.get(i);
                 while (operator.equals("×") || operator.equals("/") || operator.equals("%")) {
@@ -222,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
 
             double result = operands.poll();
 
+            //loop untuk operator sisa (plus dan minus)
             while (!operators.isEmpty()) {
                 operator = operators.poll();
                 operand = operands.poll();
@@ -235,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            //taruh result ke dalam textview
             calculationTV.setText(calculation);
             if (result == 0) {
                 throw new Exception();
@@ -244,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
                 calculation = Double.toString(result);
             }
             resultTV.setText(calculation);
-        } catch (Exception e) {
+        } catch (Exception e) { //jika ada error / exception, ubah hasil menjadi 0
             calculationTV.setText(calculation);
             calculation = "";
             resultTV.setText("0");
