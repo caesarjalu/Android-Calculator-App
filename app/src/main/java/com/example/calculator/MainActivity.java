@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                             operators.remove(i);
                             break;
                     }
-                    if (!operators.isEmpty()) {
+                    if (!(operators.isEmpty() || i >= operators.size())) {
                         operator = operators.get(i);
                     } else {
                         break;
@@ -253,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
             }
             resultTV.setText(calculation);
         } catch (Exception e) { //jika ada error / exception, ubah hasil menjadi 0
+            System.out.println(e);
             calculationTV.setText(calculation);
             calculation = "";
             resultTV.setText("0");
